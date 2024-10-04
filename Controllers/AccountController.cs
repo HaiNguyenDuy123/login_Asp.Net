@@ -74,10 +74,4 @@ public class AccountController(SignInManager<AppUser> signInManager, UserManager
         return RedirectToAction("Index","Home");
     }
 
-    private IActionResult RedirectToLocal(string? returnUrl)
-    {
-        return !string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)
-            ? Redirect(returnUrl)
-            : RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
-    }
-}
+
