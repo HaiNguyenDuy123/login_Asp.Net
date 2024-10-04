@@ -38,7 +38,35 @@ public class AccountController(SignInManager<AppUser> signInManager, UserManager
         return View();
     }
 
+    [HttpPost]
+    public async Task<IActionResult> Register(RegisterVM model, string? returnUrl = null)
+    {
+        ViewData["ReturnUrl"] = returnUrl;
+        if (ModelState.IsValid)
+        {
+            AppUser user = new()
+            {
+                Name = model.Name,
+                UserName = model.Email,
+                Email = model.Email,
+                Address = model.Address
+            };
 
+            var result = await userManager.CreateAsync(user, model.Password!);
+
+            if (result.Succeeded)
+            {
+                await signInManager.SignInAsync(user, false);
+
+                return RedirectToLocal(returnUrl);
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+        }
+        return View(model);
+    }
 
     public async Task<IActionResult> Logout()
     {
